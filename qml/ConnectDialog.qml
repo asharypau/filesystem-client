@@ -111,7 +111,7 @@ Dialog {
             Button {
                 text: "Cancel"
                 Layout.preferredWidth: 100
-                onClicked: connectDialog.reject()
+                onClicked: connectDialogViewModel.close()
             }
 
             Item { Layout.fillWidth: true }
@@ -119,13 +119,13 @@ Dialog {
             Button {
                 text: "Connect"
                 Layout.preferredWidth: 100
-                onClicked: connectDialogViewModel.connectToServer()
+                onClicked: connectDialogViewModel.connectToHost()
             }
     
             Button {
                 text: "Save && Connect"
                 Layout.preferredWidth: 100
-                onClicked: connectDialogViewModel.connectToServer()
+                onClicked: connectDialogViewModel.connectToHost()
             }
         }
     }
@@ -140,7 +140,11 @@ Dialog {
     Connections {
         target: connectDialogViewModel
 
-        function onConnectionSucceeded() {
+        function onClosed() {
+            connectDialog.reject()
+        }
+
+        function onConnected() {
             connectDialog.accept()
         }
     }

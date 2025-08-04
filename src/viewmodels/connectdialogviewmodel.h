@@ -1,6 +1,7 @@
 #ifndef CONNECTDIALOGVIEWMODEL
 #define CONNECTDIALOGVIEWMODEL
 
+#include "../core/sessionmanager.h"
 #include <qobject.h>
 
 class ConnectDialogViewModel : public QObject
@@ -12,7 +13,7 @@ class ConnectDialogViewModel : public QObject
     Q_PROPERTY(QString errorMessage READ errorMessage WRITE setErrorMessage NOTIFY errorMessageChanged)
 
 public:
-    explicit ConnectDialogViewModel(QObject* parent = nullptr);
+    ConnectDialogViewModel(SessionManager* sessionManager, QObject* parent = nullptr);
 
     QString host() const { return _host; }
     ushort port() const { return _port; }
@@ -24,18 +25,27 @@ public:
     void setRoot(const QString& root);
     void setErrorMessage(const QString& errorMessage);
 
-    Q_INVOKABLE void connectToServer();
+    Q_INVOKABLE void close();
+    Q_INVOKABLE void connectToHost();
 
 signals:
     void hostChanged();
     void portChanged();
     void rootChanged();
     void errorMessageChanged();
-    void connectionSucceeded();
+    void closed();
+    void connected();
+
+private slots:
+    void onConnected();
+    void onErrorOccurred(QAbstractSocket::SocketError error, QString errorString);
 
 private:
+    QString validate() const;
+
+    SessionManager* _sessionManager;
     QString _host;
-    ushort _port;
+    quint16 _port;
     QString _root;
     QString _errorMessage;
 };

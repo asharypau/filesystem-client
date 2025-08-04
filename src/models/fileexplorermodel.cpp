@@ -3,12 +3,12 @@
 
 FileExplorerModel::FileExplorerModel(QObject* parent)
     : QAbstractTableModel(parent)
-    , _filesInfo()
+    , _data()
 {
     QDateTime dateTime;
 
-    _filesInfo.push_back({"name1", "ext1", dateTime.currentDateTimeUtc(), 1024, false});
-    _filesInfo.push_back({"name", "", dateTime.currentDateTimeUtc(), 0, true});
+    _data.push_back({"name1", "ext1", dateTime.currentDateTimeUtc(), 1024, false});
+    _data.push_back({"name", "", dateTime.currentDateTimeUtc(), 0, true});
 }
 
 QVariant FileExplorerModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -39,25 +39,25 @@ QVariant FileExplorerModel::data(const QModelIndex& index, int role) const
     if (!index.isValid() || role != Qt::DisplayRole)
         return {};
 
-    const FileInfo& fileInfo = _filesInfo[index.row()];
+    const FileInfo& item = _data[index.row()];
     switch (index.column())
     {
     case 0:
-        return fileInfo.isDirectory ? "[" + fileInfo.name + "]" : fileInfo.name;
+        return item.isDirectory ? "[" + item.name + "]" : item.name;
     case 1:
-        return fileInfo.isDirectory ? "" : fileInfo.extension;
+        return item.isDirectory ? "" : item.extension;
     case 2:
-        return fileInfo.isDirectory ? "<DIR>" : QString::number(fileInfo.size);
+        return item.isDirectory ? "<DIR>" : QString::number(item.size);
     case 3:
-        return fileInfo.lastModifiedDate.toString("yyyy-MM-dd HH:mm");
+        return item.lastModifiedDate.toString("yyyy-MM-dd HH:mm");
     }
 
     return {};
 }
 
-void FileExplorerModel::update(const QList<FileInfo> filesInfo)
+void FileExplorerModel::update(const QList<FileInfo>& data)
 {
     beginResetModel();
-    _filesInfo = filesInfo;
+    _data = data;
     endResetModel();
 }

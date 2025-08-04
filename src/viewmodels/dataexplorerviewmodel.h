@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+static int _counter;
+
 class DataExplorerViewModel : public QObject
 {
     Q_OBJECT
@@ -11,13 +13,14 @@ class DataExplorerViewModel : public QObject
 public:
     explicit DataExplorerViewModel(QObject* parent = nullptr);
 
-    QObject* model() { return _model; }
+    QObject* model() { return _counter++ == 0 ? _fileExplorerModel : _clientExplorerModel; }
 
 signals:
     void modelChanged();
 
 private:
-    QObject* _model;
+    QObject* _fileExplorerModel;
+    QObject* _clientExplorerModel;
 };
 
 #endif // DATAEXPLORERVIEWMODEL

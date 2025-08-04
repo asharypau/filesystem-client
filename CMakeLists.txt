@@ -12,9 +12,13 @@ qt_add_executable(appfilesystem-client
     src/main.cpp
 
     src/core/appinitializer.h src/core/appinitializer.cpp
+    src/core/dispatcher.h src/core/dispatcher.cpp
+    src/core/sessionmanager.h src/core/sessionmanager.cpp
 
     src/models/fileinfo.h
+    src/models/clientinfo.h
     src/models/fileexplorermodel.h src/models/fileexplorermodel.cpp
+    src/models/clientexplorermodel.h src/models/clientexplorermodel.cpp
 
     src/viewmodels/mainviewmodel.h
     src/viewmodels/connectdialogviewmodel.h src/viewmodels/connectdialogviewmodel.cpp

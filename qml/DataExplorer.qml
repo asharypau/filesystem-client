@@ -80,9 +80,11 @@ Rectangle {
                 required property bool selected;
 
                 implicitWidth: {
-                    if (column === 0) return tableView.width * 0.4;
+                    // if (column === 0) return tableView.width * 0.4;
 
-                    return tableView.width * 0.2;
+                    // return tableView.width * 0.2;
+
+                    return tableView.width / tableView.columns
                 }
                 implicitHeight: 20
                 color: selected ? "lightblue" : "transparent"

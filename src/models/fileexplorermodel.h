@@ -13,16 +13,16 @@ public:
     explicit FileExplorerModel(QObject* parent = nullptr);
 
     int columnCount(const QModelIndex& = QModelIndex()) const override { return 4; }
-    int rowCount(const QModelIndex& = QModelIndex()) const override { return _filesInfo.size(); }
+    int rowCount(const QModelIndex& = QModelIndex()) const override { return _data.size(); }
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
     QVariant data(const QModelIndex& index, int role) const override;
 
 public slots:
-    void update(const QList<FileInfo> filesInfo);
+    void update(const QList<FileInfo>& data);
 
 private:
-    QList<FileInfo> _filesInfo;
+    QList<FileInfo> _data;
 };
 
 #endif // FILEEXPLORERMODEL
