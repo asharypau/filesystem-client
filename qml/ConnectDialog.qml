@@ -144,7 +144,7 @@ Dialog {
             connectDialog.reject()
         }
 
-        function onConnected() {
+        function onStarted() {
             connectDialog.accept()
         }
     }

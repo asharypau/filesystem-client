@@ -34,10 +34,10 @@ signals:
     void rootChanged();
     void errorMessageChanged();
     void closed();
-    void connected();
+    void started();
 
 private slots:
-    void onConnected();
+    void onStarted();
     void onErrorOccurred(QAbstractSocket::SocketError error, QString errorString);
 
 private:

@@ -4,8 +4,8 @@ ClientExplorerModel::ClientExplorerModel(QObject* parent)
     : QAbstractTableModel(parent)
     , _data()
 {
-    _data.push_back({"client1", true});
-    _data.push_back({"client2", false});
+    _data.push_back({{}, "client1", true});
+    _data.push_back({{}, "client2", false});
 }
 
 QVariant ClientExplorerModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -15,7 +15,7 @@ QVariant ClientExplorerModel::headerData(int section, Qt::Orientation orientatio
         switch (section)
         {
         case 0:
-            return "Name";
+            return "Id";
         case 1:
             return "Status";
         }
@@ -32,11 +32,11 @@ QVariant ClientExplorerModel::data(const QModelIndex& index, int role) const
     if (!index.isValid() || role != Qt::DisplayRole)
         return {};
 
-    const ClientInfo& item = _data[index.row()];
+    const RemoteClient& item = _data[index.row()];
     switch (index.column())
     {
     case 0:
-        return "[" + item.name + "]";
+        return "[" + item.id + "]";
     case 1:
         return item.isActive ? "Active" : "Inactive";
     }
@@ -44,7 +44,7 @@ QVariant ClientExplorerModel::data(const QModelIndex& index, int role) const
     return {};
 }
 
-void ClientExplorerModel::update(const QList<ClientInfo>& data)
+void ClientExplorerModel::update(const QList<RemoteClient>& data)
 {
     beginResetModel();
     _data = data;

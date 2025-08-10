@@ -1,49 +1,39 @@
 #include "sessionmanager.h"
-#include "../services/idgenerator.h"
 
 SessionManager::SessionManager(Dispatcher* dispatcher, QObject* parent)
     : QObject(parent)
     , _dispatcher(dispatcher)
-    , _socket(nullptr)
+    , _session(nullptr)
 {
 }
 
-void SessionManager::connectToHost(QString host, quint16 port)
+void SessionManager::connectToHost(QString host, quint16 port, QString root)
 {
-    if (!_socket)
+    if (!_session)
     {
-        _socket = new QTcpSocket(this);
+        _session = new Session(this);
 
-        connect(_socket, &QTcpSocket::connected, this, &SessionManager::onConnected);
-        connect(_socket, &QTcpSocket::errorOccurred, this, &SessionManager::onErrorOccurred);
+        connect(_session, &Session::started, this, &SessionManager::onStarted);
+        connect(_session, &Session::ended, this, &SessionManager::onEnded);
+        connect(_session, &Session::errorOccurred, this, &SessionManager::onErrorOccurred);
     }
 
-    _socket->abort();
-    _socket->connectToHost(host, port);
+    _session->connectToHost(host, port, root);
 }
 
-void SessionManager::onConnected()
+void SessionManager::onStarted()
 {
-    _id = IdGenerator::generate(_root);
+    connect(_session, &Session::dataReceived, _dispatcher, &Dispatcher::dispatch);
 
-    connect(_socket, &QTcpSocket::disconnected, this, &SessionManager::onDisconnected);
-    connect(_socket, &QTcpSocket::readyRead, this, &SessionManager::onReadyRead);
-
-    emit connected();
+    emit started();
 }
 
-void SessionManager::onDisconnected()
+void SessionManager::onEnded()
 {
-    emit disconnected();
+    emit ended();
 }
 
-void SessionManager::onErrorOccurred(QAbstractSocket::SocketError error)
+void SessionManager::onErrorOccurred(QAbstractSocket::SocketError error, QString errorString)
 {
-    emit errorOccurred(error, _socket->errorString());
-}
-
-void SessionManager::onReadyRead()
-{
-    QByteArray data = _socket->readAll();
-    _dispatcher->dispatch(data);
+    emit errorOccurred(error, errorString);
 }

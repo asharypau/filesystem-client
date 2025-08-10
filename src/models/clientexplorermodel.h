@@ -1,7 +1,7 @@
 #ifndef CLIENTEXPLORERMODEL_H
 #define CLIENTEXPLORERMODEL_H
 
-#include "clientinfo.h"
+#include "remoteclient.h"
 #include <qobject.h>
 #include <qstandarditemmodel.h>
 
@@ -19,10 +19,10 @@ public:
     QVariant data(const QModelIndex& index, int role) const override;
 
 public slots:
-    void update(const QList<ClientInfo>& data);
+    void update(const QList<RemoteClient>& data);
 
 private:
-    QList<ClientInfo> _data;
+    QList<RemoteClient> _data;
 };
 
 #endif // CLIENTEXPLORERMODEL_H

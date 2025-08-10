@@ -4,9 +4,9 @@
 ConnectDialogViewModel::ConnectDialogViewModel(SessionManager* sessionManager, QObject* parent)
     : QObject(parent)
     , _sessionManager(sessionManager)
-    , _host()
-    , _port(0)
-    , _root()
+    , _host("127.0.0.1")
+    , _port(8080)
+    , _root("D:/")
     , _errorMessage()
 {
 }
@@ -49,7 +49,7 @@ void ConnectDialogViewModel::setErrorMessage(const QString& errorMessage)
 
 Q_INVOKABLE void ConnectDialogViewModel::close()
 {
-    disconnect(_sessionManager, &SessionManager::connected, this, &ConnectDialogViewModel::onConnected);
+    disconnect(_sessionManager, &SessionManager::started, this, &ConnectDialogViewModel::onStarted);
     disconnect(_sessionManager, &SessionManager::errorOccurred, this, &ConnectDialogViewModel::onErrorOccurred);
 
     emit closed();
@@ -65,23 +65,23 @@ Q_INVOKABLE void ConnectDialogViewModel::connectToHost()
     }
 
     setErrorMessage("");
-    _sessionManager->connectToHost(_host, _port);
+    _sessionManager->connectToHost(_host, _port, _root);
 
-    connect(_sessionManager, &SessionManager::connected, this, &ConnectDialogViewModel::onConnected);
+    connect(_sessionManager, &SessionManager::started, this, &ConnectDialogViewModel::onStarted);
     connect(_sessionManager, &SessionManager::errorOccurred, this, &ConnectDialogViewModel::onErrorOccurred);
 }
 
-void ConnectDialogViewModel::onConnected()
+void ConnectDialogViewModel::onStarted()
 {
     setErrorMessage("");
-    emit connected();
+    emit started();
 }
 
 void ConnectDialogViewModel::onErrorOccurred(QAbstractSocket::SocketError error, QString errorString)
 {
     setErrorMessage(errorString);
 
-    disconnect(_sessionManager, &SessionManager::connected, this, &ConnectDialogViewModel::onConnected);
+    disconnect(_sessionManager, &SessionManager::started, this, &ConnectDialogViewModel::onStarted);
     disconnect(_sessionManager, &SessionManager::errorOccurred, this, &ConnectDialogViewModel::onErrorOccurred);
 }
 

@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(filesystem-client VERSION 0.1 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
@@ -11,14 +12,20 @@ qt_standard_project_setup(REQUIRES 6.8)
 qt_add_executable(appfilesystem-client
     src/main.cpp
 
+    src/core/constants.h
     src/core/appinitializer.h src/core/appinitializer.cpp
     src/core/dispatcher.h src/core/dispatcher.cpp
+    src/core/session.h src/core/session.cpp
     src/core/sessionmanager.h src/core/sessionmanager.cpp
 
     src/models/fileinfo.h
-    src/models/clientinfo.h
+    src/models/remoteclient.h
+    src/models/localclient.h
     src/models/fileexplorermodel.h src/models/fileexplorermodel.cpp
     src/models/clientexplorermodel.h src/models/clientexplorermodel.cpp
+
+    src/services/serialization.h
+    src/services/idgenerator.h src/services/idgenerator.cpp
 
     src/viewmodels/mainviewmodel.h
     src/viewmodels/connectdialogviewmodel.h src/viewmodels/connectdialogviewmodel.cpp

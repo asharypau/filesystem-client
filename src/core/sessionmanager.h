@@ -2,8 +2,8 @@
 #define SESSIONMANAGER_H
 
 #include "dispatcher.h"
+#include "session.h"
 #include <qobject.h>
-#include <qtcpsocket.h>
 
 class SessionManager : public QObject
 {
@@ -12,28 +12,21 @@ class SessionManager : public QObject
 public:
     SessionManager(Dispatcher* dispatcher, QObject* parent = nullptr);
 
-    const QString& id() const { return _id; }
-    const QString& root() const { return _root; }
-
-    void connectToHost(QString host, quint16 port);
+    void connectToHost(QString host, quint16 port, QString root);
 
 signals:
-    void connected();
-    void disconnected();
+    void started();
+    void ended();
     void errorOccurred(QAbstractSocket::SocketError error, QString errorString);
 
 private slots:
-    void onConnected();
-    void onDisconnected();
-    void onErrorOccurred(QAbstractSocket::SocketError error);
-    void onReadyRead();
+    void onStarted();
+    void onEnded();
+    void onErrorOccurred(QAbstractSocket::SocketError error, QString errorString);
 
 private:
     Dispatcher* _dispatcher;
-    QTcpSocket* _socket;
-
-    QString _id;
-    QString _root;
+    Session* _session;
 };
 
 #endif // SESSIONMANAGER_H
