@@ -2,6 +2,10 @@
 #define SESSION_H
 
 #include "../models/localclient.h"
+#include "../network/constants.h"
+#include "../network/headerdraft.h"
+#include "../network/headerpackage.h"
+#include "../network/serialization.h"
 #include "QByteArray"
 #include "qstring"
 #include <qobject.h>
@@ -20,7 +24,7 @@ signals:
     void started();
     void ended();
     void errorOccurred(QAbstractSocket::SocketError error, QString errorString);
-    void dataReceived(QByteArray data);
+    void dataReceived(Network::HeaderPackage header_package, QByteArray data);
 
 private slots:
     void onConnected();
@@ -30,17 +34,13 @@ private slots:
 
 private:
     template<class TModel>
-    void write(TModel model)
+    void write(const Network::HeaderDraft& header_draft, TModel model)
     {
-        QByteArray raw_data = Serializer::serialize(model);
-        data_size_t raw_data_size = raw_data.size();
+        QByteArray data = Network::Serializer::serialize(model);
+        Network::HeaderPackage header_package = Network::HeaderPackage::from_draft(header_draft,
+                                                                                   static_cast<Network::data_size_t>(model.size()));
 
-        QByteArray data;
-        data.resize(DATA_SIZE + raw_data_size);
-
-        std::memcpy(data.data(), &raw_data_size, DATA_SIZE);
-        std::memcpy(data.data() + DATA_SIZE, raw_data.data(), raw_data_size);
-
+        _socket->write(Network::Serializer::serialize(header_package));
         _socket->write(data);
     }
 

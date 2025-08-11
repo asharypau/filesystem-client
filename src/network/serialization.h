@@ -1,15 +1,17 @@
-#ifndef SERIALIZATION_H
-#define SERIALIZATION_H
+#ifndef NETWORK_SERIALIZATION_H
+#define NETWORK_SERIALIZATION_H
 
-#include "../core/constants.h"
+#include "constants.h"
 #include "qlist.h"
 #include "qstring"
 
+namespace Network
+{
 template<class TModel>
 class ISerializable
 {
 public:
-    data_size_t size() const { return get_impl()->size_impl(); }
+    Network::data_size_t size() const { return get_impl()->size_impl(); }
     auto as_tuple() { return get_impl()->as_tuple_impl(); }
     auto as_tuple() const { return get_impl()->as_tuple_impl(); }
 
@@ -29,10 +31,10 @@ class Serializer
 {
 public:
     template<class TModel>
-    static data_t serialize(const TModel& model)
+    static Network::data_t serialize(const TModel& model)
     {
-        data_size_t offset = 0;
-        data_t data;
+        Network::data_size_t offset = 0;
+        Network::data_t data;
 
         if constexpr (Serializable<TModel>)
         {
@@ -48,9 +50,9 @@ public:
     }
 
     template<class TModel>
-    static TModel deserialize(const data_t& data)
+    static TModel deserialize(const Network::data_t& data)
     {
-        data_size_t offset = 0;
+        Network::data_size_t offset = 0;
         TModel model{};
 
         if constexpr (Serializable<TModel>)
@@ -68,61 +70,63 @@ public:
 
 private:
     template<class... Args>
-    static void serialize_tuple(data_t& data, const std::tuple<const Args&...>& tuple, data_size_t* offset)
+    static void serialize_tuple(Network::data_t& data,
+                                const std::tuple<const Args&...>& tuple,
+                                Network::data_size_t* offset)
     {
         std::apply([&](const auto&... args) { (internal_serialize(data, args, offset), ...); }, tuple);
     }
 
     template<class... Args>
-    static void deserialize_tuple(const data_t& data, std::tuple<Args&...>& tuple, data_size_t* offset)
+    static void deserialize_tuple(const Network::data_t& data, std::tuple<Args&...>& tuple, Network::data_size_t* offset)
     {
         std::apply([&](auto&... args) { (internal_deserialize(data, args, offset), ...); }, tuple);
     }
 
     template<class TModel>
-    static void serialize_list(data_t& data, const QList<TModel>& model, data_size_t* offset)
+    static void serialize_list(Network::data_t& data, const QList<TModel>& model, Network::data_size_t* offset)
     {
-        data_size_t data_size = DATA_SIZE;
+        Network::data_size_t Network::DATA_SIZE = Network::DATA_SIZE;
         for (const TModel& item : model)
         {
-            data_size += DATA_SIZE;
-            data_size += item.size();
+            Network::DATA_SIZE += Network::DATA_SIZE;
+            Network::DATA_SIZE += item.size();
         }
 
-        data.resize(data_size);
+        data.resize(Network::DATA_SIZE);
 
         // vector size
-        data_size_t vector_size = static_cast<data_size_t>(model.size());
-        std::memcpy(data.data() + *offset, &vector_size, DATA_SIZE);
-        *offset += DATA_SIZE;
+        Network::data_size_t vector_size = static_cast<Network::data_size_t>(model.size());
+        std::memcpy(data.data() + *offset, &vector_size, Network::DATA_SIZE);
+        *offset += Network::DATA_SIZE;
 
         for (const TModel& item : model)
         {
             // item size
-            data_size_t item_size = static_cast<data_size_t>(item.size());
-            std::memcpy(data.data() + *offset, &item_size, DATA_SIZE);
-            *offset += DATA_SIZE;
+            Network::data_size_t item_size = static_cast<Network::data_size_t>(item.size());
+            std::memcpy(data.data() + *offset, &item_size, Network::DATA_SIZE);
+            *offset += Network::DATA_SIZE;
 
             serialize_tuple(data, item.as_tuple(), offset);
         }
     }
 
     template<class TModel>
-    static void deserialize_list(const data_t& data, QList<TModel>& model, data_size_t* offset)
+    static void deserialize_list(const Network::data_t& data, QList<TModel>& model, Network::data_size_t* offset)
     {
         // vector size
-        data_size_t vector_size = 0;
-        std::memcpy(&vector_size, data.data() + *offset, DATA_SIZE);
-        *offset += DATA_SIZE;
+        Network::data_size_t vector_size = 0;
+        std::memcpy(&vector_size, data.data() + *offset, Network::DATA_SIZE);
+        *offset += Network::DATA_SIZE;
 
         model.reserve(vector_size);
 
         while (vector_size-- > 0)
         {
             // item size
-            data_size_t item_size = 0;
-            std::memcpy(&item_size, data.data() + *offset, DATA_SIZE);
-            *offset += DATA_SIZE;
+            Network::data_size_t item_size = 0;
+            std::memcpy(&item_size, data.data() + *offset, Network::DATA_SIZE);
+            *offset += Network::DATA_SIZE;
 
             model.emplace_back();
             auto tuple = model.back().as_tuple();
@@ -131,7 +135,7 @@ private:
     }
 
     template<class TModel>
-    static void internal_serialize(data_t& data, const TModel& model, data_size_t* offset)
+    static void internal_serialize(Network::data_t& data, const TModel& model, Network::data_size_t* offset)
     {
         if constexpr (std::is_trivially_copyable_v<TModel>)
         {
@@ -144,7 +148,7 @@ private:
     }
 
     template<class TModel>
-    static void internal_deserialize(const data_t& data, TModel& model, data_size_t* offset)
+    static void internal_deserialize(const Network::data_t& data, TModel& model, Network::data_size_t* offset)
     {
         if constexpr (std::is_trivially_copyable_v<TModel>)
         {
@@ -157,42 +161,47 @@ private:
     }
 
     template<class TModel>
-    static void serialize_trivially_copyable_type(data_t& data, const TModel& model, data_size_t* offset)
+    static void serialize_trivially_copyable_type(Network::data_t& data,
+                                                  const TModel& model,
+                                                  Network::data_size_t* offset)
     {
         std::memcpy(data.data() + *offset, &model, sizeof(TModel));
         *offset += sizeof(TModel);
     }
 
     template<class TModel>
-    static void deserialize_trivially_copyable_type(const data_t& data, TModel& model, data_size_t* offset)
+    static void deserialize_trivially_copyable_type(const Network::data_t& data,
+                                                    TModel& model,
+                                                    Network::data_size_t* offset)
     {
         std::memcpy(&model, data.data() + *offset, sizeof(TModel));
         *offset += sizeof(TModel);
     }
 
-    static void serialize_string(data_t& data, const QString& model, data_size_t* offset)
+    static void serialize_string(Network::data_t& data, const QString& model, Network::data_size_t* offset)
     {
         // string size
-        const data_size_t string_size = static_cast<const data_size_t>(model.size());
-        std::memcpy(data.data() + *offset, &string_size, DATA_SIZE);
-        *offset += DATA_SIZE;
+        const Network::data_size_t string_size = static_cast<const Network::data_size_t>(model.size());
+        std::memcpy(data.data() + *offset, &string_size, Network::DATA_SIZE);
+        *offset += Network::DATA_SIZE;
 
         // string
         std::memcpy(data.data() + *offset, model.data(), string_size);
         *offset += string_size;
     }
 
-    static void deserialize_string(const data_t& data, QString& model, data_size_t* offset)
+    static void deserialize_string(const Network::data_t& data, QString& model, Network::data_size_t* offset)
     {
         // string size
-        data_size_t string_size = 0;
-        std::memcpy(&string_size, data.data() + *offset, DATA_SIZE);
-        *offset += DATA_SIZE;
+        Network::data_size_t string_size = 0;
+        std::memcpy(&string_size, data.data() + *offset, Network::DATA_SIZE);
+        *offset += Network::DATA_SIZE;
 
         // string
         model = QString::fromUtf8(data.data() + *offset, string_size);
         *offset += string_size;
     }
 };
+} // namespace Network
 
-#endif // SERIALIZATION_H
+#endif // NETWORK_SERIALIZATION_H

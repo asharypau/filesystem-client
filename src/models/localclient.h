@@ -1,19 +1,19 @@
 #ifndef LOCALCLIENT_H
 #define LOCALCLIENT_H
 
-#include "../core/constants.h"
-#include "../services/serialization.h"
+#include "../network/constants.h"
+#include "../network/serialization.h"
 #include <qstring.h>
 
-struct LocalClient : public ISerializable<LocalClient>
+struct LocalClient : public Network::ISerializable<LocalClient>
 {
     QString id;
     QString root;
 
 private:
-    friend class ISerializable<LocalClient>;
+    friend class Network::ISerializable<LocalClient>;
 
-    data_size_t size_impl() const { return DATA_SIZE + id.size() + DATA_SIZE + root.size(); }
+    Network::data_size_t size_impl() const { return Network::DATA_SIZE + id.size() + Network::DATA_SIZE + root.size(); }
     auto as_tuple_impl() { return std::tie(id, root); }
     auto as_tuple_impl() const { return std::tie(id, root); }
 };

@@ -12,7 +12,6 @@ qt_standard_project_setup(REQUIRES 6.8)
 qt_add_executable(appfilesystem-client
     src/main.cpp
 
-    src/core/constants.h
     src/core/appinitializer.h src/core/appinitializer.cpp
     src/core/dispatcher.h src/core/dispatcher.cpp
     src/core/session.h src/core/session.cpp
@@ -24,7 +23,12 @@ qt_add_executable(appfilesystem-client
     src/models/fileexplorermodel.h src/models/fileexplorermodel.cpp
     src/models/clientexplorermodel.h src/models/clientexplorermodel.cpp
 
-    src/services/serialization.h
+    src/network/constants.h
+    src/network/requesttype.h
+    src/network/headerdraft.h
+    src/network/headerpackage.h
+    src/network/serialization.h
+
     src/services/idgenerator.h src/services/idgenerator.cpp
 
     src/viewmodels/mainviewmodel.h

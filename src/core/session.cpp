@@ -1,6 +1,5 @@
 #include "session.h"
 #include "../services/idgenerator.h"
-#include "../services/serialization.h"
 
 Session::Session(QObject *parent)
     : QObject(parent)
@@ -23,7 +22,7 @@ void Session::connectToHost(QString host, quint16 port, QString root)
 
 void Session::onConnected()
 {
-    write(_local_client);
+    write({}, _local_client);
 
     connect(_socket, &QTcpSocket::readyRead, this, &Session::onReadyRead);
     emit started();
@@ -41,9 +40,9 @@ void Session::onErrorOccurred(QAbstractSocket::SocketError error)
 
 void Session::onReadyRead()
 {
-    data_size_t data_size = 0;
-    _socket->read(reinterpret_cast<char *>(&data_size), DATA_SIZE);
+    QByteArray headers = _socket->read(Network::HeaderPackage::SIZE);
+    Network::HeaderPackage header_package = Network::Serializer::deserialize<Network::HeaderPackage>(headers);
+    QByteArray data = _socket->read(header_package.data_size);
 
-    QByteArray data = _socket->read(data_size);
-    emit dataReceived(data);
+    emit dataReceived(header_package, data);
 }
