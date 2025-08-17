@@ -2,8 +2,9 @@
 #define FILEEXPLORERMODEL
 
 #include "fileinfo.h"
-#include <qobject.h>
-#include <qstandarditemmodel.h>
+#include "qlist.h"
+#include "qobject.h"
+#include "qstandarditemmodel.h"
 
 class FileExplorerModel : public QAbstractTableModel
 {

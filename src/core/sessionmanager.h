@@ -1,31 +1,36 @@
 #ifndef SESSIONMANAGER_H
 #define SESSIONMANAGER_H
 
-#include "dispatcher.h"
+#include "../network/iconnection.h"
+#include "../network/protocol.h"
+#include "../network/protocoltypes.h"
+#include "qabstractsocket.h"
+#include "qobject.h"
+#include "qstring.h"
 #include "session.h"
-#include <qobject.h>
 
 class SessionManager : public QObject
 {
     Q_OBJECT
 
 public:
-    SessionManager(Dispatcher* dispatcher, QObject* parent = nullptr);
+    explicit SessionManager(QObject* parent = nullptr);
 
     void connectToHost(QString host, quint16 port, QString root);
 
 signals:
-    void started();
+    void started(Network::IConnection* connection);
     void ended();
     void errorOccurred(QAbstractSocket::SocketError error, QString errorString);
+    void dataReceived(Network::Protocol::Headers headers, Network::Protocol::data_t data);
 
 private slots:
-    void onStarted();
+    void onStarted(Network::IConnection* connection);
     void onEnded();
     void onErrorOccurred(QAbstractSocket::SocketError error, QString errorString);
+    void onDataReceived(Network::Protocol::Headers headers, Network::Protocol::data_t data);
 
 private:
-    Dispatcher* _dispatcher;
     Session* _session;
 };
 

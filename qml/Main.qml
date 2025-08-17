@@ -34,12 +34,14 @@ ApplicationWindow {
 
         DataExplorer {
             id: leftTableView
+            dataExplorerViewModel: leftDataExplorerViewModel
             SplitView.fillHeight: true
             SplitView.preferredWidth: parent.width / 2
         }
 
         DataExplorer {
             id: rightTableView
+            dataExplorerViewModel: rightDataExplorerViewModel
             SplitView.fillHeight: true
             SplitView.preferredWidth: parent.width / 2
         }

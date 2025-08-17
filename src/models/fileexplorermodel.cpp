@@ -1,14 +1,9 @@
 #include "fileexplorermodel.h"
-#include <qdatetime.h>
 
 FileExplorerModel::FileExplorerModel(QObject* parent)
     : QAbstractTableModel(parent)
     , _data()
 {
-    QDateTime dateTime;
-
-    _data.push_back({"name1", "ext1", dateTime.currentDateTimeUtc(), 1024, false});
-    _data.push_back({"name", "", dateTime.currentDateTimeUtc(), 0, true});
 }
 
 QVariant FileExplorerModel::headerData(int section, Qt::Orientation orientation, int role) const

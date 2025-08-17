@@ -1,9 +1,10 @@
 #ifndef CLIENTEXPLORERMODEL_H
 #define CLIENTEXPLORERMODEL_H
 
-#include "remoteclient.h"
-#include <qobject.h>
-#include <qstandarditemmodel.h>
+#include "client.h"
+#include "qlist.h"
+#include "qobject.h"
+#include "qstandarditemmodel.h"
 
 class ClientExplorerModel : public QAbstractTableModel
 {

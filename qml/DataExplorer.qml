@@ -8,6 +8,8 @@ Rectangle {
     border.width: 1
     color: "transparent"
 
+    property var dataExplorerViewModel
+
     ColumnLayout {
         anchors {
             top: parent.top

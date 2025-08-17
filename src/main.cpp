@@ -5,12 +5,12 @@
 int main(int argc, char* argv[])
 {
     QGuiApplication app(argc, argv);
-
     QQmlApplicationEngine engine;
-    engine.loadFromModule("filesystem-client", "Main");
 
     AppInitializer appInitializer;
     appInitializer.setupContext(engine.rootContext());
+
+    engine.loadFromModule("filesystem-client", "Main");
 
     QObject::connect(
         &engine,

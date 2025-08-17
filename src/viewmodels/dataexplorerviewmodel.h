@@ -1,9 +1,10 @@
-#ifndef DATAEXPLORERVIEWMODEL
-#define DATAEXPLORERVIEWMODEL
+#ifndef DATAEXPLORERVIEWMODEL_H
+#define DATAEXPLORERVIEWMODEL_H
 
-#include <QObject>
-
-static int _counter;
+#include "../models/clientexplorermodel.h"
+#include "../models/fileexplorermodel.h"
+#include "../services/explorerdataprovider.h"
+#include "qobject.h"
 
 class DataExplorerViewModel : public QObject
 {
@@ -11,16 +12,44 @@ class DataExplorerViewModel : public QObject
     Q_PROPERTY(QObject* model READ model NOTIFY modelChanged)
 
 public:
-    explicit DataExplorerViewModel(QObject* parent = nullptr);
+    enum class ViewState : uint16_t
+    {
+        None,
+        Clients,
+        FileInfos,
+    };
 
-    QObject* model() { return _counter++ == 0 ? _fileExplorerModel : _clientExplorerModel; }
+public:
+    DataExplorerViewModel(ViewState state, ExplorerDataProvider* explorerDataProvider, QObject* parent = nullptr);
+
+    QObject* model()
+    {
+        switch (_viewState)
+        {
+        case ViewState::Clients:
+            return _clientExplorerModel;
+        case ViewState::FileInfos:
+            return _fileExplorerModel;
+
+        case ViewState::None:
+        default:
+            return {};
+        }
+    }
 
 signals:
     void modelChanged();
 
+private slots:
+    void onStarted();
+    void onClientsReceived(const QList<RemoteClient>& clients);
+    void onFileInfosReceived(const QList<FileInfo>& fileInfos);
+
 private:
-    QObject* _fileExplorerModel;
-    QObject* _clientExplorerModel;
+    ViewState _viewState;
+    ExplorerDataProvider* _explorerDataProvider;
+    ClientExplorerModel* _clientExplorerModel;
+    FileExplorerModel* _fileExplorerModel;
 };
 
-#endif // DATAEXPLORERVIEWMODEL
+#endif // DATAEXPLORERVIEWMODEL_H

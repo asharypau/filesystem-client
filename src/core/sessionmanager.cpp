@@ -1,8 +1,7 @@
 #include "sessionmanager.h"
 
-SessionManager::SessionManager(Dispatcher* dispatcher, QObject* parent)
+SessionManager::SessionManager(QObject* parent)
     : QObject(parent)
-    , _dispatcher(dispatcher)
     , _session(nullptr)
 {
 }
@@ -21,11 +20,11 @@ void SessionManager::connectToHost(QString host, quint16 port, QString root)
     _session->connectToHost(host, port, root);
 }
 
-void SessionManager::onStarted()
+void SessionManager::onStarted(Network::IConnection* connection)
 {
-    connect(_session, &Session::dataReceived, _dispatcher, &Dispatcher::dispatch);
+    emit started(connection);
 
-    emit started();
+    connect(_session, &Session::dataReceived, this, &SessionManager::onDataReceived);
 }
 
 void SessionManager::onEnded()
@@ -36,4 +35,9 @@ void SessionManager::onEnded()
 void SessionManager::onErrorOccurred(QAbstractSocket::SocketError error, QString errorString)
 {
     emit errorOccurred(error, errorString);
+}
+
+void SessionManager::onDataReceived(Network::Protocol::Headers headers, Network::Protocol::data_t data)
+{
+    emit dataReceived(headers, data);
 }

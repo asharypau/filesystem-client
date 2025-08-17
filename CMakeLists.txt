@@ -13,23 +13,21 @@ qt_add_executable(appfilesystem-client
     src/main.cpp
 
     src/core/appinitializer.h src/core/appinitializer.cpp
-    src/core/dispatcher.h src/core/dispatcher.cpp
     src/core/session.h src/core/session.cpp
     src/core/sessionmanager.h src/core/sessionmanager.cpp
 
     src/models/fileinfo.h
-    src/models/remoteclient.h
-    src/models/localclient.h
+    src/models/client.h
     src/models/fileexplorermodel.h src/models/fileexplorermodel.cpp
     src/models/clientexplorermodel.h src/models/clientexplorermodel.cpp
 
-    src/network/constants.h
-    src/network/requesttype.h
-    src/network/headerdraft.h
-    src/network/headerpackage.h
+    src/network/iconnection.h
+    src/network/protocol.h
+    src/network/protocoltypes.h
     src/network/serialization.h
 
-    src/services/idgenerator.h src/services/idgenerator.cpp
+    src/services/explorerdataprovider.h src/services/explorerdataprovider.cpp
+    src/services/localfileinfoprovider.h src/services/localfileinfoprovider.cpp
 
     src/viewmodels/mainviewmodel.h
     src/viewmodels/connectdialogviewmodel.h src/viewmodels/connectdialogviewmodel.cpp

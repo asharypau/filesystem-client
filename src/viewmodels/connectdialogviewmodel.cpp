@@ -74,6 +74,10 @@ Q_INVOKABLE void ConnectDialogViewModel::connectToHost()
 void ConnectDialogViewModel::onStarted()
 {
     setErrorMessage("");
+
+    disconnect(_sessionManager, &SessionManager::started, this, &ConnectDialogViewModel::onStarted);
+    disconnect(_sessionManager, &SessionManager::errorOccurred, this, &ConnectDialogViewModel::onErrorOccurred);
+
     emit started();
 }
 
