@@ -33,14 +33,14 @@ ApplicationWindow {
         orientation: Qt.Horizontal
 
         DataExplorer {
-            id: leftTableView
+            id: leftDataExplorer
             dataExplorerViewModel: leftDataExplorerViewModel
             SplitView.fillHeight: true
             SplitView.preferredWidth: parent.width / 2
         }
 
         DataExplorer {
-            id: rightTableView
+            id: rightDataExplorer
             dataExplorerViewModel: rightDataExplorerViewModel
             SplitView.fillHeight: true
             SplitView.preferredWidth: parent.width / 2
@@ -49,5 +49,10 @@ ApplicationWindow {
 
     ConnectDialog {
         id: connectDialog
+    }
+
+    Component.onCompleted: {
+        leftDataExplorer.otherDataExplorer = rightDataExplorer
+        rightDataExplorer.otherDataExplorer = leftDataExplorer
     }
 }

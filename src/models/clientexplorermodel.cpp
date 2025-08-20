@@ -4,6 +4,8 @@ ClientExplorerModel::ClientExplorerModel(QObject* parent)
     : QAbstractTableModel(parent)
     , _data()
 {
+    _data.push_back({{"client-id1"}, {}, true});
+    _data.push_back({{"client-id2"}, {}, false});
 }
 
 QVariant ClientExplorerModel::headerData(int section, Qt::Orientation orientation, int role) const

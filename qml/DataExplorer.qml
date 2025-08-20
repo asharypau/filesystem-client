@@ -4,11 +4,17 @@ import QtQuick.Window
 import QtQuick.Layouts
 
 Rectangle {
+    id: root
     border.color: "black"
     border.width: 1
     color: "transparent"
 
-    property var dataExplorerViewModel
+    implicitWidth: 400
+    implicitHeight: 200
+
+    property var dataExplorerViewModel;
+    property Item otherDataExplorer;
+    property alias tableView: tableView;
 
     ColumnLayout {
         anchors {
@@ -26,6 +32,7 @@ Rectangle {
         HorizontalHeaderView {
             id: horizontalHeader
             syncView: tableView
+            focus: true
             clip: true
             interactive: false
             Layout.fillWidth: true
@@ -33,7 +40,7 @@ Rectangle {
 
             delegate: Rectangle {
                 implicitHeight: 30
-                implicitWidth: tableView.columnWidth(column)
+                implicitWidth: 100
                 color: "transparent"
 
                 // Bottom border for all headers
@@ -59,63 +66,90 @@ Rectangle {
                     text: display
                     anchors.centerIn: parent
                     font.bold: true
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
                 }
             }
         }
 
         TableView {
             id: tableView
+            model: root.dataExplorerViewModel.model
             focus: true
-            model: dataExplorerViewModel.model
             clip: true
             interactive: false
+            pointerNavigationEnabled: false
             Layout.fillWidth: true
             Layout.fillHeight: true
 
+            selectionMode: TableView.SingleSelection
+            selectionBehavior: TableView.SelectRows
             selectionModel: ItemSelectionModel {
-                id: selectionModel
+                id: selection 
                 model: tableView.model
             }
 
-            delegate: Rectangle {
-                required property bool current;
-                required property bool selected;
-
-                implicitWidth: {
-                    // if (column === 0) return tableView.width * 0.4;
-
-                    // return tableView.width * 0.2;
-
-                    return tableView.width / tableView.columns
-                }
+            delegate: TableViewDelegate {
+                id: tableViewDelegate
                 implicitHeight: 20
-                color: selected ? "lightblue" : "transparent"
+                implicitWidth: tableView.width / tableView.columns
 
                 Text {
-                    text: display
+                    id: contentText
                     anchors.centerIn: parent
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
                 }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        const idx = tableView.model.index(row, 0);
-                        tableView.selectionModel.setCurrentIndex(
-                            idx,
-                            ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Current | ItemSelectionModel.Rows
-                        );
-
-                        forceActiveFocus();
+                TapHandler {
+                    onTapped: {
+                        tableView.selectRow(row);
+                        tableView.forceActiveFocus();
                     }
                 }
             }
 
-            onCurrentRowChanged: {
-                const idx = tableView.model.index(currentRow, 0);
-                selectionModel.setCurrentIndex(
-                    idx,
-                    ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Current | ItemSelectionModel.Rows
-                );
+            TapHandler {
+                onTapped: {
+                    tableView.forceActiveFocus();
+                }
+            }
+
+            Keys.onPressed: (event) => {
+                if (event.key === Qt.Key_Up) {
+                    var row = selection.currentIndex.row - 1;
+                    if (selection.currentIndex.row === 0) {
+                        row = 0;
+                    }
+
+                    tableView.selectRow(row);
+                    event.accepted = true;
+                }
+                else if (event.key === Qt.Key_Down) {
+                    var row = selection.currentIndex.row + 1;
+                    if (selection.currentIndex.row === -1) {
+                        row = 0;
+                    } else if (selection.currentIndex.row === tableView.rows - 1) {
+                        row = tableView.rows - 1;
+                    }
+
+                    tableView.selectRow(row);
+                    event.accepted = true;
+                }
+                else if (event.key === Qt.Key_Left || event.key === Qt.Key_Right) {
+                    selection.clear();
+                    event.accepted = true;
+                } else if (event.key === Qt.Key_Tab) {
+                    root.otherDataExplorer.tableView.forceActiveFocus();
+                    event.accepted = true;
+                }
+            }
+
+            function selectRow(row) {
+                const idx = tableView.model.index(row, 0);
+                selection.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Rows);
             }
         }
     }
