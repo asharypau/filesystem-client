@@ -3,6 +3,8 @@
 
 #include "../network/protocoltypes.h"
 #include "../network/serialization.h"
+#include "fileinfo.h"
+#include "qlist.h"
 #include "qstring.h"
 #include <tuple>
 
@@ -47,6 +49,13 @@ private:
 
     auto as_tuple_impl() { return std::tie(id, isActive); }
     auto as_tuple_impl() const { return std::tie(id, isActive); }
+};
+
+class ClientFiles : public Client
+{
+public:
+    QString path;
+    QList<FileInfo> files;
 };
 
 #endif // CLIENT_H

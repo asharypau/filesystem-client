@@ -7,6 +7,7 @@ AppInitializer::AppInitializer()
     , _connectDialogViewModel(nullptr)
     , _leftDataExplorerViewModel(nullptr)
     , _rightDataExplorerViewModel(nullptr)
+    , _breadcrumbViewModel(nullptr)
 {
 }
 
@@ -27,4 +28,7 @@ void AppInitializer::setupContext(QQmlContext* context)
                                                             &_explorerDataProvider,
                                                             _mainViewModel);
     context->setContextProperty("rightDataExplorerViewModel", _rightDataExplorerViewModel);
+
+    _breadcrumbViewModel = new BreadcrumbViewModel(_mainViewModel);
+    context->setContextProperty("breadcrumbViewModel", _breadcrumbViewModel);
 }

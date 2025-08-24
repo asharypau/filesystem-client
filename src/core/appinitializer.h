@@ -2,6 +2,7 @@
 #define APPINITIALIZER_H
 
 #include "../services/explorerdataprovider.h"
+#include "../viewmodels/breadcrumbviewmodel.h"
 #include "../viewmodels/connectdialogviewmodel.h"
 #include "../viewmodels/dataexplorerviewmodel.h"
 #include "../viewmodels/mainviewmodel.h"
@@ -23,6 +24,7 @@ private:
     ConnectDialogViewModel* _connectDialogViewModel;
     DataExplorerViewModel* _leftDataExplorerViewModel;
     DataExplorerViewModel* _rightDataExplorerViewModel;
+    BreadcrumbViewModel* _breadcrumbViewModel;
 };
 
 #endif // APPINITIALIZER_H

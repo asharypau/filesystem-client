@@ -32,6 +32,7 @@ qt_add_executable(appfilesystem-client
     src/viewmodels/mainviewmodel.h
     src/viewmodels/connectdialogviewmodel.h src/viewmodels/connectdialogviewmodel.cpp
     src/viewmodels/dataexplorerviewmodel.h src/viewmodels/dataexplorerviewmodel.cpp
+    src/viewmodels/breadcrumbviewmodel.h src/viewmodels/breadcrumbviewmodel.cpp
 )
 
 qt_add_qml_module(appfilesystem-client
@@ -40,7 +41,11 @@ qt_add_qml_module(appfilesystem-client
     QML_FILES
         qml/Main.qml
         qml/ConnectDialog.qml
+        qml/DataTable.qml
         qml/DataExplorer.qml
+        qml/Breadcrumb.qml
+        qml/BreadcrumbButton.qml
+
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

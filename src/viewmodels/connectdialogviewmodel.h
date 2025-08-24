@@ -2,7 +2,7 @@
 #define CONNECTDIALOGVIEWMODEL
 
 #include "../core/sessionmanager.h"
-#include <qobject.h>
+#include "qobject.h"
 
 class ConnectDialogViewModel : public QObject
 {

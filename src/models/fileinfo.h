@@ -4,8 +4,9 @@
 #include <qdatetime.h>
 #include <qstring.h>
 
-struct FileInfo
+class FileInfo
 {
+public:
     QString name;
     QString extension;
     QDateTime lastModifiedDate;
