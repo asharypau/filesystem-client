@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
 import QtQuick.Layouts
+import QtQuick.Controls.Material
 
 ApplicationWindow {
     id: main
@@ -9,6 +10,8 @@ ApplicationWindow {
     height: 600
     visible: true
     title: "FileSystemClient"
+
+    Material.theme: Material.Light;
 
     menuBar: MenuBar {
         Menu {
@@ -30,20 +33,29 @@ ApplicationWindow {
 
     SplitView {
         anchors.fill: parent
+        anchors.margins: 4
         orientation: Qt.Horizontal
+
+        handle: Rectangle {
+            implicitWidth: 5
+            implicitHeight: 5
+            color: "transparent"
+        }
 
         DataExplorer {
             id: leftDataExplorer
             dataExplorerViewModel: leftDataExplorerViewModel
-            SplitView.fillHeight: true
             SplitView.preferredWidth: parent.width / 2
+            SplitView.fillHeight: true
+            SplitView.fillWidth: true
         }
 
         DataExplorer {
             id: rightDataExplorer
             dataExplorerViewModel: rightDataExplorerViewModel
-            SplitView.fillHeight: true
             SplitView.preferredWidth: parent.width / 2
+            SplitView.fillHeight: true
+            SplitView.fillWidth: true
         }
     }
 
@@ -52,7 +64,7 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
-        leftDataExplorer.otherDataExplorer = rightDataExplorer
-        rightDataExplorer.otherDataExplorer = leftDataExplorer
+        leftDataExplorer.otherDataExplorer = rightDataExplorer;
+        rightDataExplorer.otherDataExplorer = leftDataExplorer;
     }
 }

@@ -10,12 +10,4 @@ BreadcrumbViewModel::BreadcrumbViewModel(QObject* parent)
     _pathItems.append("part5");
     _pathItems.append("part6");
     _pathItems.append("part7");
-    _pathItems.append("part8");
-    _pathItems.append("part9");
-    _pathItems.append("part10");
-    _pathItems.append("part11");
-    _pathItems.append("part12");
-    _pathItems.append("part13");
-    _pathItems.append("part14");
-    _pathItems.append("part15");
 }

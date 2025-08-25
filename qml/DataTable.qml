@@ -4,22 +4,18 @@ import QtQuick.Window
 import QtQuick.Layouts
 
 Frame {
-    id: root
-    implicitWidth: 400
+    implicitWidth: 300
     implicitHeight: 200
 
-    background: Rectangle {
-        border.width: 1
-        radius: 2
-    }
+    property alias tableAlias: table;
+    property var viewModel;
+    property var otherDataTable;
 
-    contentItem : ColumnLayout {
+    ColumnLayout {
         anchors.fill: parent
-        anchors.margins: root.background.border.width + 1
-        spacing: 2
+        anchors.margins: 8
 
         HorizontalHeaderView {
-            id: horizontalHeader
             syncView: table
             focus: true
             clip: true
@@ -64,7 +60,7 @@ Frame {
 
         TableView {
             id: table
-            model: root.viewModel.model
+            model: viewModel.model
             focus: true
             clip: true
             interactive: false
@@ -74,15 +70,12 @@ Frame {
 
             selectionMode: TableView.SingleSelection
             selectionBehavior: TableView.SelectRows
-            selectionModel: ItemSelectionModel {
-                id: selectModel
-                model: table.model
-            }
+            selectionModel: ItemSelectionModel { model: table.model }
 
             delegate: TableViewDelegate {
+                padding: 2
                 implicitHeight: 20
                 implicitWidth: table.width / table.columns
-                padding: 2
 
                 TapHandler {
                     onTapped: {
@@ -99,44 +92,40 @@ Frame {
             }
 
             Keys.onPressed: (event) => {
+                var row = 0;
                 if (event.key === Qt.Key_Up) {
-                    var row = selectModel.currentIndex.row - 1;
-                    if (selectModel.currentIndex.row === 0) {
+                    row = table.selectionModel.currentIndex.row - 1;
+                    if (table.selectionModel.currentIndex.row === 0) {
                         row = 0;
                     }
-            
+
                     table.selectRow(row);
                     event.accepted = true;
                 }
                 else if (event.key === Qt.Key_Down) {
-                    var row = selectModel.currentIndex.row + 1;
-                    if (selectModel.currentIndex.row === -1) {
+                    row = table.selectionModel.currentIndex.row + 1;
+                    if (table.selectionModel.currentIndex.row === -1) {
                         row = 0;
-                    } else if (selectModel.currentIndex.row === table.rows - 1) {
+                    } else if (table.selectionModel.currentIndex.row === table.rows - 1) {
                         row = table.rows - 1;
                     }
-            
+
                     table.selectRow(row);
                     event.accepted = true;
                 }
                 else if (event.key === Qt.Key_Left || event.key === Qt.Key_Right) {
-                    selectModel.clear();
+                    table.selectionModel.clear();
                     event.accepted = true;
-                } else if (event.key === Qt.Key_Tab) {
-                    root.otherDataTable.table.forceActiveFocus();
+                } else if (event.key === Qt.Key_Tab && otherDataTable) {
+                    otherDataTable.tableAlias.forceActiveFocus();
                     event.accepted = true;
                 }
             }
 
             function selectRow(row) {
                 const idx = table.model.index(row, 0);
-                selectModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Rows);
+                table.selectionModel.setCurrentIndex(idx, ItemSelectionModel.ClearAndSelect | ItemSelectionModel.Rows);
             }
         }
     }
-
-    property alias table: table;
-
-    property var viewModel;
-    property var otherDataTable;
 }

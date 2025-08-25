@@ -6,7 +6,7 @@ RowLayout {
     id: root
     spacing: -8
     clip: true
-    x: Math.min(0, parent.width - root.width)
+    implicitHeight: 50
 
     Repeater {
         model: breadcrumbViewModel.pathItems

@@ -7,6 +7,9 @@ ToolButton {
     implicitHeight: contentItem.implicitHeight
     implicitWidth: contentItem.implicitWidth + leftPadding + rightPadding
 
+    property bool first: false;
+    property bool last: false;
+
     background: Shape {
         anchors.fill: parent
 
@@ -47,7 +50,4 @@ ToolButton {
         color: "black"
         font.bold: root.last
     }
-
-    property bool first: false
-    property bool last: false
 }
