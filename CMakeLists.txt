@@ -27,7 +27,7 @@ qt_add_executable(appfilesystem-client
     src/network/serialization.h
 
     src/services/explorerdataprovider.h src/services/explorerdataprovider.cpp
-    src/services/localfileinfoprovider.h src/services/localfileinfoprovider.cpp
+    src/services/localdirectoryinfoprovider.h src/services/localdirectoryinfoprovider.cpp
 
     src/viewmodels/mainviewmodel.h
     src/viewmodels/connectdialogviewmodel.h src/viewmodels/connectdialogviewmodel.cpp

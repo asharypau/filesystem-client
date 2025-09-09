@@ -5,6 +5,7 @@ import QtQuick.Layouts
 
 ColumnLayout {
     spacing: 4
+    clip: true
 
     property alias dataTableAlias: dataTable;
     property var dataExplorerViewModel;

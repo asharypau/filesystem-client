@@ -37,7 +37,7 @@ private:
 class RemoteClient : public Client, public Network::ISerializable<RemoteClient>
 {
 public:
-    bool isActive;
+    bool isActive = false;
 
 private:
     friend class Network::ISerializable<RemoteClient>;
@@ -51,11 +51,13 @@ private:
     auto as_tuple_impl() const { return std::tie(id, isActive); }
 };
 
-class ClientFiles : public Client
+class ClientDirectoryInfo : public Client, public Network::ISerializable<ClientDirectoryInfo>
 {
 public:
-    QString path;
-    QList<FileInfo> files;
+    DirectoryInfo directoryInfo;
+
+private:
+    friend class Network::ISerializable<ClientDirectoryInfo>;
 };
 
 #endif // CLIENT_H

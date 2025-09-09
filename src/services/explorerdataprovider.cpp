@@ -1,5 +1,5 @@
 #include "explorerdataprovider.h"
-#include "localfileinfoprovider.h"
+#include "localdirectoryinfoprovider.h"
 
 ExplorerDataProvider::ExplorerDataProvider(SessionManager* sessionManager, QObject* parent)
     : QObject(parent)
@@ -30,11 +30,11 @@ void ExplorerDataProvider::readFileInfos(Client::id_t id)
 
     if (_connection->owner().id == id)
     {
+        DirectoryInfo directoryInfo = LocalDirectoryInfoProvider::get(_connection->owner().root);
+        emit fileInfosReceived(directoryInfo.filesInfo);
     }
     else
     {
-        QList<FileInfo> fileInfos = LocalFileInfoProvider::get(_connection->owner().root);
-        emit fileInfosReceived(fileInfos);
     }
 }
 
@@ -54,7 +54,7 @@ void ExplorerDataProvider::onDataReceived(Network::Protocol::Headers headers, Ne
 
     switch (headers.method)
     {
-    case Network::Protocol::Action::GetClientFiles:
+    case Network::Protocol::Action::GetClientDirectoryInfo:
     {
         QList<FileInfo> fileInfos = Network::Serializer::deserialize<QList<FileInfo>>(data);
         emit fileInfosReceived(fileInfos);

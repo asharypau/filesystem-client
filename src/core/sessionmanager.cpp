@@ -13,8 +13,6 @@ void SessionManager::connectToHost(QString host, quint16 port, QString root)
         _session = new Session(this);
 
         connect(_session, &Session::started, this, &SessionManager::onStarted);
-        connect(_session, &Session::ended, this, &SessionManager::onEnded);
-        connect(_session, &Session::errorOccurred, this, &SessionManager::onErrorOccurred);
     }
 
     _session->connectToHost(host, port, root);
@@ -22,9 +20,11 @@ void SessionManager::connectToHost(QString host, quint16 port, QString root)
 
 void SessionManager::onStarted(Network::IConnection* connection)
 {
-    emit started(connection);
-
+    connect(_session, &Session::ended, this, &SessionManager::onEnded);
+    connect(_session, &Session::errorOccurred, this, &SessionManager::onErrorOccurred);
     connect(_session, &Session::dataReceived, this, &SessionManager::onDataReceived);
+
+    emit started(connection);
 }
 
 void SessionManager::onEnded()

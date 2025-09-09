@@ -21,7 +21,7 @@ enum class Action : uint16_t
 {
     None,
     GetClients,
-    GetClientFiles,
+    GetClientDirectoryInfo,
 };
 
 class Headers : public Network::ISerializable<Headers>

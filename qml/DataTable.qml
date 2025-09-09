@@ -12,8 +12,10 @@ Frame {
     property var otherDataTable;
 
     ColumnLayout {
+        spacing: 2
         anchors.fill: parent
-        anchors.margins: 8
+        anchors.centerIn: parent
+        anchors.margins: 6
 
         HorizontalHeaderView {
             syncView: table
@@ -26,34 +28,25 @@ Frame {
             delegate: Rectangle {
                 implicitHeight: 30
                 implicitWidth: 100
-                color: "transparent"
-
-                // Bottom border for all headers
-                Rectangle {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    height: 1
-                    color: "lightgray"
-                }
-            
-                // Right border, except for the last column
-                Rectangle {
-                    visible: column < table.columns - 1
-                    width: 1
-                    color: "lightgray"
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    anchors.right: parent.right
-                }
+                color: "#f0f0f0"
+                border.color: "#cccccc"
+                border.width: 1
 
                 Text {
                     text: display
-                    anchors.centerIn: parent
+                    anchors.fill: parent
                     font.bold: true
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onEntered: parent.color = "#e0e0e0"
+                    onExited: parent.color = "#f0f0f0"
+                    acceptedButtons: Qt.NoButton
                 }
             }
         }
@@ -67,13 +60,13 @@ Frame {
             pointerNavigationEnabled: false
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.margins: 0
 
             selectionMode: TableView.SingleSelection
             selectionBehavior: TableView.SelectRows
             selectionModel: ItemSelectionModel { model: table.model }
 
             delegate: TableViewDelegate {
-                padding: 2
                 implicitHeight: 20
                 implicitWidth: table.width / table.columns
 
@@ -88,6 +81,7 @@ Frame {
             TapHandler {
                 onTapped: {
                     table.forceActiveFocus();
+                    table.selectionModel.clear();
                 }
             }
 
